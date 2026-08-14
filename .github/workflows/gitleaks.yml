@@ -34,4 +34,4 @@ jobs:
             -v "$PWD:/repo:ro" \
             -w /repo \
             ghcr.io/gitleaks/gitleaks:v8.30.1 \
-            dir --no-banner --redact --exit-code 1 --timeout 300 /repo
+            dir --no-banner --redact --exit-code 1 --timeout 300 .
