@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "mode": "audit-only",
+  "mutations": {
+    "merge": false,
+    "ready_for_review": false,
+    "labels": false,
+    "comments": false,
+    "branch_updates": false
+  },
+  "trusted_dependency_authors": [
+    "dependabot[bot]"
+  ],
+  "low_risk_dependency_paths": [
+    "**/package-lock.json",
+    "**/npm-shrinkwrap.json",
+    "**/requirements*.txt",
+    "**/poetry.lock",
+    "**/uv.lock",
+    "**/Pipfile.lock",
+    "**/Gemfile.lock",
+    "**/Cargo.lock",
+    "**/go.sum"
+  ],
+  "sensitive_paths": [
+    ".github/workflows/**",
+    ".github/actions/**",
+    ".github/CODEOWNERS",
+    "**/*.tf",
+    "**/*.tfvars",
+    "**/*.tfplan",
+    "**/terraform/**",
+    "**/tofu/**",
+    "**/infra/**",
+    "**/infrastructure/**",
+    "**/deploy/**",
+    "**/deployment/**",
+    "**/Dockerfile",
+    "**/docker-compose*.yml",
+    "**/docker-compose*.yaml"
+  ],
+  "manual_review_categories": [
+    "governance baseline",
+    "security hardening",
+    "recovery checkpoint",
+    "cross-repository audit"
+  ]
+}

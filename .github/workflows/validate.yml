@@ -25,5 +25,8 @@ jobs:
       - name: Validate repository
         run: python tools/validate_repo.py
 
+      - name: Test PR governance audit
+        run: python -m unittest discover -s tests -v
+
       - name: Check whitespace
         run: git diff --check

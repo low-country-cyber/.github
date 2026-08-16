@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import json
 import re
 import sys
 
@@ -19,9 +20,15 @@ REQUIRED = {
     "SUPPORT.md",
     ".github/CODEOWNERS",
     ".github/dependabot.yml",
+    ".github/pr-governance-policy.json",
     ".github/workflows/gitleaks.yml",
+    ".github/workflows/pr-governance-audit.yml",
     ".github/workflows/secret-scan.yml",
     ".github/workflows/validate.yml",
+    "docs/pr-governance-audit.md",
+    "tests/fixtures/open-prs.json",
+    "tests/test_pr_governance_audit.py",
+    "tools/pr_governance_audit.py",
 }
 FORBIDDEN_SUFFIXES = {
     ".env",
@@ -83,6 +90,43 @@ def main() -> int:
     secret_scan_workflow = (ROOT / ".github/workflows/secret-scan.yml").read_text(encoding="utf-8")
     if "push:\n    branches: [main]" not in secret_scan_workflow:
         issues.append("secret-scan push trigger must be limited to main")
+
+    policy_path = ROOT / ".github/pr-governance-policy.json"
+    try:
+        policy = json.loads(policy_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        issues.append(f"invalid PR governance policy JSON: {exc}")
+    else:
+        if policy.get("mode") != "audit-only":
+            issues.append("PR governance policy must remain audit-only")
+        mutations = policy.get("mutations", {})
+        if not mutations or any(bool(value) for value in mutations.values()):
+            issues.append("all PR governance mutation capabilities must remain disabled")
+
+    audit_workflow = (ROOT / ".github/workflows/pr-governance-audit.yml").read_text(
+        encoding="utf-8"
+    )
+    if "pull_request:" in audit_workflow or "push:" in audit_workflow:
+        issues.append("organization PR audit must not run untrusted pull-request or push code")
+    if "workflow_dispatch:" not in audit_workflow or "schedule:" not in audit_workflow:
+        issues.append("organization PR audit must support manual and scheduled audit-only runs")
+    if re.search(r"^\s{2,}[a-z_-]+:\s+write\s*$", audit_workflow, re.MULTILINE):
+        issues.append("organization PR audit permissions must remain read-only")
+    if "secrets." in audit_workflow:
+        issues.append("organization PR audit must not accept or inherit repository secrets")
+    forbidden_audit_commands = (
+        "gh pr merge",
+        "gh pr ready",
+        "gh pr edit",
+        "gh pr comment",
+        "gh api --method post",
+        "gh api --method patch",
+        "gh api --method delete",
+    )
+    audit_tool = (ROOT / "tools/pr_governance_audit.py").read_text(encoding="utf-8").lower()
+    for command in forbidden_audit_commands:
+        if command in audit_tool or command in audit_workflow.lower():
+            issues.append(f"organization PR audit contains forbidden mutation command: {command}")
 
     if issues:
         print("FAIL: organization governance validation")

@@ -1,0 +1,64 @@
+{
+  "prs": [
+    {
+      "repository": "example/safe-app",
+      "number": 10,
+      "title": "chore(deps): bump requests from 2.31.0 to 2.32.0",
+      "isDraft": false,
+      "author": {"login": "dependabot[bot]"},
+      "url": "https://github.example/example/safe-app/pull/10",
+      "mergeable": "MERGEABLE",
+      "mergeStateStatus": "CLEAN",
+      "statusCheckRollup": [{"status": "COMPLETED", "conclusion": "SUCCESS"}],
+      "files": [{"path": "requirements.txt"}]
+    },
+    {
+      "repository": "example/governance",
+      "number": 11,
+      "title": "Add repository GitHub governance baseline",
+      "isDraft": true,
+      "author": {"login": "company-owner"},
+      "url": "https://github.example/example/governance/pull/11",
+      "mergeable": "MERGEABLE",
+      "mergeStateStatus": "CLEAN",
+      "statusCheckRollup": [{"status": "COMPLETED", "conclusion": "SUCCESS"}],
+      "files": [{"path": "CONTRIBUTING.md"}]
+    },
+    {
+      "repository": "example/automation",
+      "number": 12,
+      "title": "Harden deployment workflow",
+      "isDraft": false,
+      "author": {"login": "company-owner"},
+      "url": "https://github.example/example/automation/pull/12",
+      "mergeable": "MERGEABLE",
+      "mergeStateStatus": "CLEAN",
+      "statusCheckRollup": [{"status": "COMPLETED", "conclusion": "SUCCESS"}],
+      "files": [{"path": ".github/workflows/deploy.yml"}]
+    },
+    {
+      "repository": "example/service",
+      "number": 13,
+      "title": "Fix report parser",
+      "isDraft": false,
+      "author": {"login": "company-owner"},
+      "url": "https://github.example/example/service/pull/13",
+      "mergeable": "MERGEABLE",
+      "mergeStateStatus": "UNSTABLE",
+      "statusCheckRollup": [{"status": "COMPLETED", "conclusion": "FAILURE"}],
+      "files": [{"path": "src/parser.py"}]
+    },
+    {
+      "repository": "example/incident-tools",
+      "number": 14,
+      "title": "Recovery checkpoint: restore case tools",
+      "isDraft": true,
+      "author": {"login": "company-owner"},
+      "url": "https://github.example/example/incident-tools/pull/14",
+      "mergeable": "UNKNOWN",
+      "mergeStateStatus": "UNKNOWN",
+      "statusCheckRollup": [],
+      "files": [{"path": "tools/recover.py"}]
+    }
+  ]
+}
