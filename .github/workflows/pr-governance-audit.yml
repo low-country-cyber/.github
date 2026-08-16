@@ -1,0 +1,39 @@
+name: Organization PR Governance Audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 12 * * 1-5"
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  audit:
+    name: Audit visible organization PRs
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out governance tooling
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Generate audit-only report
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 tools/pr_governance_audit.py \
+            --owner low-country-cyber \
+            --scope-label "public repositories visible to the .github workflow token" \
+            --output "$RUNNER_TEMP/pr-governance-audit.md" \
+            --json-output "$RUNNER_TEMP/pr-governance-audit.json"
+
+      - name: Publish plain-English workflow summary
+        if: always()
+        run: |
+          if test -s "$RUNNER_TEMP/pr-governance-audit.md"; then
+            cat "$RUNNER_TEMP/pr-governance-audit.md" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "PR governance audit failed before a report was created." >> "$GITHUB_STEP_SUMMARY"
+          fi
